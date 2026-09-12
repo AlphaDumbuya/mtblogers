@@ -1,0 +1,266 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─── Member ────────────────────────────────────────────────────────────────
+
+model Member {
+  id           String    @id @default(cuid())
+  memberCode   String    @unique // e.g. MTB-M-000123
+  fullName     String
+  phone        String    @unique // mobile money number
+  email        String?
+  gender       String?
+  dateOfBirth  DateTime?
+  tribe        String?
+  district     String?   // district/region in Sierra Leone
+  country      String    @default("Sierra Leone")
+  occupation   String?
+  isDiaspora   Boolean   @default(false)
+  photoUrl     String?   // UploadThing URL
+  status       String    @default("ACTIVE") // ACTIVE | INACTIVE | SUSPENDED
+  pin          String?   // bcrypt hash of 6-digit PIN for member portal login
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  contributions Contribution[]
+  requests      AssistanceRequest[]
+  notifications Notification[]
+
+  @@index([phone])
+  @@index([email])
+  @@index([status])
+}
+
+// ─── Contribution ──────────────────────────────────────────────────────────
+
+enum ContributionStatus {
+  PENDING
+  PAID
+  FAILED
+  CANCELLED
+}
+
+model Contribution {
+  id               String             @id @default(cuid())
+  reference        String             @unique // MTB-YYYYMM-XXXXXX
+  contributionType String
+  amount           Decimal            @db.Decimal(12, 2)
+  currency         String             @default("SLE")
+  status           ContributionStatus @default(PENDING)
+  note             String?
+
+  // Contributor snapshot (kept even if member profile changes)
+  contributorName  String
+  contributorPhone String
+  contributorEmail String?
+
+  // Monime
+  monimeSessionId   String?
+  monimeRedirectUrl String?
+
+  // Link to monthly period (optional)
+  periodId String?
+  period   ContributionPeriod? @relation(fields: [periodId], references: [id])
+
+  paidAt    DateTime?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  memberId String?
+  member   Member? @relation(fields: [memberId], references: [id])
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([contributionType])
+  @@index([periodId])
+}
+
+// ─── Monthly Contribution Period ───────────────────────────────────────────
+
+model ContributionPeriod {
+  id            String   @id @default(cuid())
+  year          Int
+  month         Int      // 1-12
+  label         String   // e.g. "June 2025"
+  dueDate       DateTime?
+  amountExpected Decimal? @db.Decimal(12, 2) // expected per member this month
+  isActive      Boolean  @default(false)
+  createdAt     DateTime @default(now())
+
+  contributions Contribution[]
+
+  @@unique([year, month])
+  @@index([isActive])
+}
+
+// ─── Assistance Request ────────────────────────────────────────────────────
+
+enum RequestStatus {
+  SUBMITTED
+  UNDER_REVIEW
+  APPROVED
+  DISBURSED
+  REJECTED
+}
+
+model AssistanceRequest {
+  id              String        @id @default(cuid())
+  requestCode     String        @unique // MTB-R-000123
+  category        String        // Medical, Funeral, Education, Emergency...
+  title           String
+  description     String
+  amountRequested Decimal       @db.Decimal(12, 2)
+  status          RequestStatus @default(SUBMITTED)
+  decisionNotes   String?
+  reviewedBy      String?       // admin id/email
+  reviewedAt      DateTime?
+
+  documents Document[]
+  payouts   Payout[]
+
+  memberId String
+  member   Member @relation(fields: [memberId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([category])
+}
+
+// ─── Document ──────────────────────────────────────────────────────────────
+
+model Document {
+  id        String   @id @default(cuid())
+  name      String
+  url       String
+  type      String?  // mime or label
+  createdAt DateTime @default(now())
+
+  requestId String
+  request   AssistanceRequest @relation(fields: [requestId], references: [id], onDelete: Cascade)
+}
+
+// ─── Payout ────────────────────────────────────────────────────────────────
+
+model Payout {
+  id              String   @id @default(cuid())
+  payoutCode      String   @unique // MTB-P-000123
+  beneficiaryName String
+  amount          Decimal  @db.Decimal(12, 2)
+  method          String?  // mobile money, cash, bank
+  proofUrl        String?  // UploadThing evidence
+  approvedBy      String?
+  note            String?
+  paidAt          DateTime @default(now())
+  createdAt       DateTime @default(now())
+
+  requestId String?
+  request   AssistanceRequest? @relation(fields: [requestId], references: [id])
+
+  @@index([paidAt])
+}
+
+// ─── Admin ─────────────────────────────────────────────────────────────────
+
+model Admin {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  passwordHash String
+  role         String   @default("admin") // admin | superadmin
+  createdAt    DateTime @default(now())
+
+  actions       AuditLog[]
+  announcements Announcement[]
+  posts         Post[]
+}
+
+// ─── Audit Log ─────────────────────────────────────────────────────────────
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  action    String
+  entity    String?  // e.g. "AssistanceRequest:abc"
+  details   String?
+  createdAt DateTime @default(now())
+
+  adminId String?
+  admin   Admin?  @relation(fields: [adminId], references: [id])
+
+  @@index([createdAt])
+}
+
+// ─── Announcement ──────────────────────────────────────────────────────────
+
+model Announcement {
+  id        String   @id @default(cuid())
+  tag       String   @default("UPDATE") // IMPORTANT | EVENT | UPDATE
+  title     String
+  body      String
+  published Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  adminId String?
+  admin   Admin?  @relation(fields: [adminId], references: [id])
+
+  @@index([published])
+  @@index([createdAt])
+}
+
+// ─── Post (News & Events) ──────────────────────────────────────────────────
+
+model Post {
+  id          String    @id @default(cuid())
+  kind        String    // NEWS | EVENT
+  title       String
+  slug        String    @unique
+  summary     String?
+  body        String
+  imageUrl    String?
+  eventDate   DateTime?
+  eventVenue  String?
+  published   Boolean   @default(false)
+  publishedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  adminId String?
+  admin   Admin?  @relation(fields: [adminId], references: [id])
+
+  @@index([kind])
+  @@index([published])
+}
+
+// ─── In-App Notification ───────────────────────────────────────────────────
+
+model Notification {
+  id        String   @id @default(cuid())
+  kind      String   // CONTRIBUTION | EVENT | ANNOUNCEMENT
+  title     String
+  body      String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  memberId String?
+  member   Member? @relation(fields: [memberId], references: [id], onDelete: Cascade)
+
+  @@index([memberId])
+  @@index([read])
+  @@index([createdAt])
+}
+
+// ─── Site Config ───────────────────────────────────────────────────────────
+
+model SiteConfig {
+  key       String   @id
+  value     String
+  updatedAt DateTime @updatedAt
+}
