@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getSession } from "@/lib/auth";
+import { sendEmail, emailTemplates } from "@/lib/email";
 
 export const runtime = "nodejs";
 
@@ -21,9 +22,30 @@ export async function POST(request: Request) {
       tag: TAGS.includes(tag) ? tag : "UPDATE",
       title: title.trim(),
       body: text.trim(),
+      published: body.published ?? true,
       adminId: session.id,
     },
   });
+
+  // Send email notification to all members if published
+  if (announcement.published) {
+    const members = await prisma.member.findMany({
+      where: { email: { not: null } },
+      select: { email: true, fullName: true },
+    });
+
+    if (members.length > 0) {
+      await Promise.all(
+        members.map(member =>
+          sendEmail({
+            to: [{ email: member.email!, name: member.fullName }],
+            subject: `New Announcement: ${announcement.title}`,
+            html: emailTemplates.announcementNotification(announcement.title, announcement.body),
+          })
+        )
+      );
+    }
+  }
 
   return NextResponse.json({ success: true, announcement });
 }

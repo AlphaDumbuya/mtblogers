@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "../../Toast";
 import { Dialog } from "../../Dialog";
+import { ImageUploader } from "@/app/components/ImageUploader";
 
 const DISTRICTS = [
   "Freetown","Bo","Kenema","Makeni","Koidu","Bonthe","Moyamba",
@@ -18,7 +19,7 @@ export default function NewMemberPage() {
   const [showDialog, setShowDialog] = useState(false);
   const [form, setForm] = useState({
     fullName: "", phone: "", email: "", gender: "", dateOfBirth: "",
-    district: "", occupation: "", isDiaspora: false, pin: "",
+    district: "", occupation: "", isDiaspora: false, pin: "", photoUrl: "",
   });
 
   function set(k: string, v: unknown) { setForm((f) => ({ ...f, [k]: v })); }
@@ -121,6 +122,17 @@ export default function NewMemberPage() {
                 <input type="checkbox" checked={form.isDiaspora} onChange={e => set("isDiaspora", e.target.checked)} />
                 Diaspora member (based outside Sierra Leone)
               </label>
+            </div>
+
+            <div style={{ marginTop: 24 }}>
+              <ImageUploader
+                value={form.photoUrl}
+                onChange={url => set("photoUrl", url)}
+                uploaderType="avatarUploader"
+                label="Profile Photo (Optional)"
+                hint="Recommended: square image at least 400×400 pixels"
+                maxHeight={200}
+              />
             </div>
           </div>
 

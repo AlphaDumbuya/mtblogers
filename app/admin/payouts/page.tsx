@@ -20,6 +20,7 @@ export default async function PayoutsPage() {
   });
 
   const total = payouts.reduce((s, p) => s + Number(p.amount), 0);
+  const withProof = payouts.filter(p => p.proofUrl).length;
 
   return (
     <>
@@ -36,6 +37,10 @@ export default async function PayoutsPage() {
           <div className="label">Payout Records</div>
           <div className="value">{payouts.length}</div>
         </div>
+        <div className="stat-card green">
+          <div className="label">With Proof</div>
+          <div className="value">{withProof}</div>
+        </div>
       </div>
       <div className="panel">
         <h2>Disbursements</h2>
@@ -46,35 +51,48 @@ export default async function PayoutsPage() {
             to keep the balance transparent.
           </div>
         ) : (
-          <div className="table-wrap">
-            <table className="data">
-              <thead>
-                <tr>
-                  <th>Code</th><th>Beneficiary</th><th>Request / Member</th>
-                  <th>Amount</th><th>Method</th><th>Date</th><th>Approved by</th>
-                </tr>
-              </thead>
-              <tbody>
-                {payouts.map((p) => (
-                  <tr key={p.id}>
-                    <td style={{ fontFamily: "monospace", fontSize: 12 }}>{p.payoutCode}</td>
-                    <td style={{ fontWeight: 600 }}>{p.beneficiaryName}</td>
-                    <td style={{ fontSize: 12, color: "#64748b" }}>
-                      {p.request ? (
-                        <Link href={`/admin/requests/${p.request.id}`} style={{ color: "#1c9366", textDecoration: "none" }}>
-                          {p.request.member?.fullName}
-                        </Link>
-                      ) : "—"}
-                    </td>
-                    <td style={{ fontWeight: 800, color: "#1c9366" }}>{money(Number(p.amount))}</td>
-                    <td>{p.method || "—"}</td>
-                    <td style={{ fontSize: 12 }}>{new Date(p.paidAt).toLocaleDateString()}</td>
-                    <td style={{ fontSize: 12, color: "#64748b" }}>{p.approvedBy || "—"}</td>
+          <>
+            <div className="table-wrap">
+              <table className="data">
+                <thead>
+                  <tr>
+                    <th>Code</th><th>Beneficiary</th><th>Request / Member</th>
+                    <th>Amount</th><th>Method</th><th>Date</th><th>Proof</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody>
+                  {payouts.map((p) => (
+                    <tr key={p.id}>
+                      <td style={{ fontFamily: "monospace", fontSize: 12 }}>{p.payoutCode}</td>
+                      <td style={{ fontWeight: 600 }}>{p.beneficiaryName}</td>
+                      <td style={{ fontSize: 12, color: "#64748b" }}>
+                        {p.request ? (
+                          <Link href={`/admin/requests/${p.request.id}`} style={{ color: "#1c9366", textDecoration: "none" }}>
+                            {p.request.member?.fullName}
+                          </Link>
+                        ) : "—"}
+                      </td>
+                      <td style={{ fontWeight: 800, color: "#1c9366" }}>{money(Number(p.amount))}</td>
+                      <td>{p.method || "—"}</td>
+                      <td style={{ fontSize: 12 }}>{new Date(p.paidAt).toLocaleDateString()}</td>
+                      <td style={{ textAlign: "center" }}>
+                        {p.proofUrl ? (
+                          <a href={p.proofUrl} target="_blank" rel="noopener noreferrer" style={{
+                            color: "#1c9366",
+                            textDecoration: "none",
+                            fontWeight: 600,
+                            fontSize: 12,
+                          }}>
+                            📄 View
+                          </a>
+                        ) : "—"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
     </>

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getSession } from "@/lib/auth";
+import { sendEmail, emailTemplates } from "@/lib/email";
 
 export const runtime = "nodejs";
 
@@ -30,6 +31,7 @@ export async function PATCH(request: Request, { params }: Params) {
       reviewedBy: session.email,
       reviewedAt: new Date(),
     },
+    include: { member: true },
   });
 
   // Audit log
@@ -41,6 +43,19 @@ export async function PATCH(request: Request, { params }: Params) {
       adminId: session.id,
     },
   });
+
+  // Send email notification when request is approved
+  if (status === "APPROVED" && req.member?.email) {
+    await sendEmail({
+      to: [{ email: req.member.email, name: req.member.fullName }],
+      subject: `Request Approved - ${req.requestCode}`,
+      html: emailTemplates.requestApproved(
+        req.member.fullName,
+        req.requestCode,
+        Number(req.amountRequested)
+      ),
+    });
+  }
 
   return NextResponse.json({ success: true, request: req });
 }

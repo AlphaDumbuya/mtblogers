@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "../../Toast";
 import { Dialog } from "../../Dialog";
+import { ImageUploader } from "@/app/components/ImageUploader";
 
 export default function NewPostPage() {
   const router = useRouter();
@@ -105,9 +106,13 @@ export default function NewPostPage() {
               )}
 
               <div className="field-group span-2">
-                <label>Cover Image URL</label>
-                <input value={form.imageUrl} onChange={e => set("imageUrl", e.target.value)}
-                  placeholder="https://…" />
+                <ImageUploader 
+                  value={form.imageUrl}
+                  onChange={url => set("imageUrl", url)}
+                  uploaderType="imageUploader"
+                  label="Cover Image"
+                  hint="Recommended: at least 1200×600 pixels for best display on all devices"
+                />
               </div>
 
               <div className="field-group span-2">

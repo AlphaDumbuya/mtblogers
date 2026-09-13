@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { getSession } from "@/lib/auth";
 import { requestCode } from "@/lib/codes";
+import { sendEmail, emailTemplates } from "@/lib/email";
 
 export const runtime = "nodejs";
 
@@ -30,7 +31,17 @@ export async function POST(request: Request) {
       description: description.trim(),
       amountRequested: Number(amountRequested),
     },
+    include: { member: true },
   });
+
+  // Send email notification to member
+  if (req.member?.email) {
+    await sendEmail({
+      to: [{ email: req.member.email, name: req.member.fullName }],
+      subject: `Request Received - ${req.requestCode}`,
+      html: emailTemplates.requestSubmitted(req.member.fullName, req.requestCode, req.title),
+    });
+  }
 
   return NextResponse.json({ success: true, request: req });
 }

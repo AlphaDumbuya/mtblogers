@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { ImageUploader } from "@/app/components/ImageUploader";
 
 export default function EditPostPage({ params }: { params: Promise<{ id: string }> }) {
   const router = useRouter();
@@ -115,8 +116,13 @@ export default function EditPostPage({ params }: { params: Promise<{ id: string 
                 </>
               )}
               <div className="field-group span-2">
-                <label>Cover Image URL</label>
-                <input value={String(form.imageUrl || "")} onChange={e => set("imageUrl", e.target.value)} placeholder="https://…" />
+                <ImageUploader 
+                  value={String(form.imageUrl || "")}
+                  onChange={url => set("imageUrl", url)}
+                  uploaderType="imageUploader"
+                  label="Cover Image"
+                  hint="Recommended: at least 1200×600 pixels for best display on all devices"
+                />
               </div>
               <div className="field-group span-2">
                 <label>Body *</label>

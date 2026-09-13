@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { ImageUploader } from "@/app/components/ImageUploader";
 
 const DISTRICTS = [
   "Freetown","Bo","Kenema","Makeni","Koidu","Bonthe","Moyamba",
@@ -26,7 +27,7 @@ export default function EditMemberPage({ params }: { params: Promise<{ id: strin
           fullName: m.fullName, phone: m.phone, email: m.email || "",
           gender: m.gender || "", district: m.district || "",
           occupation: m.occupation || "", isDiaspora: m.isDiaspora,
-          status: m.status,
+          status: m.status, photoUrl: m.photoUrl || "",
           dateOfBirth: m.dateOfBirth ? m.dateOfBirth.slice(0, 10) : "",
         });
       });
@@ -138,6 +139,17 @@ export default function EditMemberPage({ params }: { params: Promise<{ id: strin
                 <input type="checkbox" checked={Boolean(form.isDiaspora)} onChange={e => set("isDiaspora", e.target.checked)} />
                 Diaspora member (based outside Sierra Leone)
               </label>
+            </div>
+
+            <div style={{ marginTop: 24 }}>
+              <ImageUploader
+                value={String(form.photoUrl || "")}
+                onChange={url => set("photoUrl", url)}
+                uploaderType="avatarUploader"
+                label="Profile Photo (Optional)"
+                hint="Recommended: square image at least 400×400 pixels"
+                maxHeight={200}
+              />
             </div>
 
             {error && <div className="alert error" style={{ marginTop: 18 }}>⚠️ {error}</div>}

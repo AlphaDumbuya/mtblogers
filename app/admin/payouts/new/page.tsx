@@ -4,6 +4,7 @@ import { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useToast } from "../../Toast";
 import { Dialog } from "../../Dialog";
+import { ImageUploader } from "@/app/components/ImageUploader";
 
 function PayoutFormContent() {
   const router = useRouter();
@@ -15,6 +16,7 @@ function PayoutFormContent() {
     method:          "Mobile Money",
     requestId:       sp.get("requestId") || "",
     note:            "",
+    proofUrl:        "",
     paidAt:          new Date().toISOString().slice(0, 10),
   });
   const [loading, setLoading] = useState(false);
@@ -102,6 +104,15 @@ function PayoutFormContent() {
                 <label>Notes</label>
                 <textarea rows={3} value={form.note} onChange={e => set("note", e.target.value)}
                   placeholder="Any relevant notes…" />
+              </div>
+              <div className="field-group span-2">
+                <ImageUploader
+                  value={form.proofUrl}
+                  onChange={url => set("proofUrl", url)}
+                  uploaderType="imageUploader"
+                  label="Proof of Payment (Optional)"
+                  hint="Upload receipt, screenshot, or evidence of payout (max 4MB)"
+                />
               </div>
             </div>
           </div>

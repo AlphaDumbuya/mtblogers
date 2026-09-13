@@ -138,6 +138,30 @@ export default async function MemberDetailPage({ params }: Params) {
         <div>
           <div className="panel">
             <h2>Profile</h2>
+            {member.photoUrl && (
+              <div style={{
+                marginBottom: 24,
+                borderRadius: "12px",
+                overflow: "hidden",
+                background: "#f1f5f9",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                minHeight: 200,
+              }}>
+                <img
+                  src={member.photoUrl}
+                  alt={member.fullName}
+                  style={{
+                    maxWidth: "100%",
+                    maxHeight: "100%",
+                    width: "auto",
+                    height: "auto",
+                    objectFit: "contain",
+                  }}
+                />
+              </div>
+            )}
             <div className="detail-list">
               {rows.map(([k, v]) => (
                 <div className="detail-row" key={k}>

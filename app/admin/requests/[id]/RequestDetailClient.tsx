@@ -63,17 +63,70 @@ export default function RequestDetailClient({ request }: { request: any }) {
         {request.documents.length > 0 && (
           <div className="panel">
             <h2>Documents</h2>
-            <div style={{ display: "grid", gap: 8 }}>
-              {request.documents.map((d: any) => (
-                <a key={d.id} href={d.url} target="_blank" rel="noreferrer"
-                  style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 14px", border: "1px solid var(--line)", borderRadius: 10, textDecoration: "none", color: "var(--navy)", fontSize: 14, transition: "background 0.15s" }}
-                  onMouseEnter={e => (e.currentTarget.style.background = "#f8fafc")}
-                  onMouseLeave={e => (e.currentTarget.style.background = "")}>
-                  <span style={{ fontSize: 20 }}>📎</span>
-                  <span style={{ flex: 1 }}>{d.name}</span>
-                  <span style={{ fontSize: 12, color: "var(--slate)" }}>↗ Open</span>
-                </a>
-              ))}
+            <div style={{ display: "grid", gap: 12 }}>
+              {request.documents.map((d: any) => {
+                const isImage = d.url && /\.(jpg|jpeg|png|gif|webp)$/i.test(d.url);
+                return (
+                  <div key={d.id}>
+                    {isImage ? (
+                      <div style={{
+                        borderRadius: 10,
+                        overflow: "hidden",
+                        border: "1px solid var(--line)",
+                        background: "#f1f5f9",
+                        display: "flex",
+                        flexDirection: "column",
+                      }}>
+                        <img
+                          src={d.url}
+                          alt={d.name}
+                          style={{
+                            maxWidth: "100%",
+                            maxHeight: 300,
+                            width: "auto",
+                            height: "auto",
+                            objectFit: "contain",
+                            display: "block",
+                          }}
+                        />
+                        <a href={d.url} target="_blank" rel="noreferrer"
+                          style={{
+                            padding: "8px 14px",
+                            textAlign: "center",
+                            borderTop: "1px solid var(--line)",
+                            textDecoration: "none",
+                            color: "var(--green)",
+                            fontWeight: 600,
+                            fontSize: 12,
+                            background: "#f8fafc",
+                          }}>
+                          📥 Download
+                        </a>
+                      </div>
+                    ) : (
+                      <a href={d.url} target="_blank" rel="noreferrer"
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: 10,
+                          padding: "10px 14px",
+                          border: "1px solid var(--line)",
+                          borderRadius: 10,
+                          textDecoration: "none",
+                          color: "var(--navy)",
+                          fontSize: 14,
+                          transition: "background 0.15s",
+                        }}
+                        onMouseEnter={e => (e.currentTarget.style.background = "#f8fafc")}
+                        onMouseLeave={e => (e.currentTarget.style.background = "")}>
+                        <span style={{ fontSize: 20 }}>📎</span>
+                        <span style={{ flex: 1 }}>{d.name}</span>
+                        <span style={{ fontSize: 12, color: "var(--slate)" }}>↗ Open</span>
+                      </a>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}
