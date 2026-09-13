@@ -6,6 +6,21 @@ export const runtime = "nodejs";
 
 type Params = { params: Promise<{ id: string }> };
 
+export async function GET(_req: Request, { params }: Params) {
+  const session = await getSession();
+  if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  const { id } = await params;
+  
+  const post = await prisma.post.findUnique({ 
+    where: { id },
+    include: { admin: { select: { name: true, email: true } } }
+  });
+  
+  if (!post) return NextResponse.json({ error: "Post not found" }, { status: 404 });
+  
+  return NextResponse.json({ success: true, post });
+}
+
 export async function PATCH(request: Request, { params }: Params) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
