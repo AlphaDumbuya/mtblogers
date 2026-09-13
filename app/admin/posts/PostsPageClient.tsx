@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 
 export default function PostsPageClient({ 
@@ -13,6 +13,21 @@ export default function PostsPageClient({
   const [posts, setPosts] = useState(initialPosts);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setOpenMenu(null);
+      }
+    }
+
+    if (openMenu) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [openMenu]);
 
   async function deletePost(id: string) {
     if (!confirm("Delete this post? This action cannot be undone.")) return;
@@ -130,7 +145,7 @@ export default function PostsPageClient({
               </div>
 
               {/* Actions */}
-              <div style={{ position: "relative", display: "flex", gap: 8, alignItems: "center" }}>
+              <div style={{ position: "relative", display: "flex", gap: 8, alignItems: "center" }} ref={openMenu === p.id ? menuRef : null}>
                 <Link href={`/admin/posts/${p.id}/edit`} className="btn secondary" style={{ padding: "8px 16px", fontSize: 13, flexShrink: 0 }}>
                   Edit
                 </Link>

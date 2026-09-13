@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 
 interface Member {
@@ -18,6 +18,21 @@ export default function MembersPageClient({ initialMembers }: { initialMembers: 
   const [members, setMembers] = useState(initialMembers);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setOpenMenu(null);
+      }
+    }
+
+    if (openMenu) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [openMenu]);
 
   async function deleteMember(id: string) {
     if (!confirm("Are you sure you want to delete this member? This action cannot be undone.")) return;
@@ -88,26 +103,28 @@ export default function MembersPageClient({ initialMembers }: { initialMembers: 
                     <td style={{ textAlign: "center", fontWeight: 700 }}>{m._count.contributions}</td>
                     <td style={{ textAlign: "center", fontWeight: 700 }}>{m._count.requests}</td>
                     <td style={{ position: "relative", textAlign: "center" }}>
-                      <button 
-                        className="btn-more"
-                        onClick={() => setOpenMenu(openMenu === m.id ? null : m.id)}
-                        disabled={deleting === m.id}
-                      >
-                        ⋮
-                      </button>
-                      {openMenu === m.id && (
-                        <div className="action-menu">
-                          <Link href={`/admin/members/${m.id}/edit`}>Edit</Link>
-                          <div className="divider"></div>
-                          <button 
-                            className="delete"
-                            onClick={() => deleteMember(m.id)}
-                            disabled={deleting === m.id}
-                          >
-                            {deleting === m.id ? "Deleting..." : "Delete"}
-                          </button>
-                        </div>
-                      )}
+                      <div ref={openMenu === m.id ? menuRef : null}>
+                        <button 
+                          className="btn-more"
+                          onClick={() => setOpenMenu(openMenu === m.id ? null : m.id)}
+                          disabled={deleting === m.id}
+                        >
+                          ⋮
+                        </button>
+                        {openMenu === m.id && (
+                          <div className="action-menu">
+                            <Link href={`/admin/members/${m.id}/edit`}>Edit</Link>
+                            <div className="divider"></div>
+                            <button 
+                              className="delete"
+                              onClick={() => deleteMember(m.id)}
+                              disabled={deleting === m.id}
+                            >
+                              {deleting === m.id ? "Deleting..." : "Delete"}
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}

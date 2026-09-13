@@ -608,58 +608,76 @@ table.data .mono { font-family: ui-monospace, monospace; font-size: 12px; }
 
 /* Action menu button */
 .btn-more {
-  background: transparent;
-  border: 1px solid var(--line);
-  color: var(--slate);
-  padding: 6px 10px;
-  font-size: 14px;
+  background: #f8fafc;
+  border: 1.5px solid #cbd5e1;
+  color: #475569;
+  padding: 8px 12px;
+  font-size: 18px;
+  font-weight: 700;
   cursor: pointer;
   border-radius: var(--radius-sm);
-  transition: background 0.14s, color 0.14s;
+  transition: background 0.14s, color 0.14s, border-color 0.14s;
+  line-height: 1;
+  min-width: 36px;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-.btn-more:hover { background: #f1f5f9; color: var(--navy-3); }
+.btn-more:hover { 
+  background: #e2e8f0; 
+  color: var(--navy-3); 
+  border-color: #94a3b8;
+}
+.btn-more:active {
+  background: #cbd5e1;
+}
 
 /* Action dropdown menu */
 .action-menu {
   position: absolute;
   background: var(--card);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
-  box-shadow: 0 4px 12px rgba(15,42,71,0.15);
-  min-width: 150px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: var(--radius-md);
+  box-shadow: 0 8px 24px rgba(15,42,71,0.2);
+  min-width: 160px;
   z-index: 50;
   top: 100%;
   right: 0;
-  margin-top: 4px;
+  margin-top: 6px;
+  padding: 6px 0;
 }
 .action-menu a,
 .action-menu button {
   display: block;
   width: 100%;
-  padding: 10px 14px;
+  padding: 11px 16px;
   border: none;
   background: transparent;
   text-align: left;
   text-decoration: none;
   color: var(--navy-3);
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.14s;
+  transition: background 0.14s, color 0.14s;
 }
 .action-menu a:hover,
 .action-menu button:hover {
   background: #f5f8fb;
+  color: var(--navy);
 }
 .action-menu .divider {
-  border-top: 1px solid var(--line);
-  margin: 4px 0;
+  border-top: 1.5px solid #e2e8f0;
+  margin: 6px 0;
 }
 .action-menu .delete {
   color: #dc2626;
+  font-weight: 700;
 }
 .action-menu .delete:hover {
   background: #fee2e2;
+  color: #991b1b;
 }
 
 /* ─── Pagination ──────────────────────────────────────────────── */

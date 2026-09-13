@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 
 interface Request {
@@ -19,6 +19,21 @@ export default function RequestsPageClient({ initialRequests }: { initialRequest
   const [requests, setRequests] = useState(initialRequests);
   const [openMenu, setOpenMenu] = useState<string | null>(null);
   const [deleting, setDeleting] = useState<string | null>(null);
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setOpenMenu(null);
+      }
+    }
+
+    if (openMenu) {
+      document.addEventListener("mousedown", handleClickOutside);
+      return () => document.removeEventListener("mousedown", handleClickOutside);
+    }
+  }, [openMenu]);
 
   function money(n: number) {
     return `SLE ${n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -94,27 +109,29 @@ export default function RequestsPageClient({ initialRequests }: { initialRequest
                       <span className={`badge ${r.status}`}>{r.status.replace("_", " ")}</span>
                     </td>
                     <td style={{ position: "relative", textAlign: "center" }}>
-                      <button 
-                        className="btn-more"
-                        onClick={() => setOpenMenu(openMenu === r.id ? null : r.id)}
-                        disabled={deleting === r.id}
-                      >
-                        ⋮
-                      </button>
-                      {openMenu === r.id && (
-                        <div className="action-menu">
-                          <Link href={`/admin/requests/${r.id}`}>Review</Link>
-                          <Link href={`/admin/requests/${r.id}/edit`}>Edit</Link>
-                          <div className="divider"></div>
-                          <button 
-                            className="delete"
-                            onClick={() => deleteRequest(r.id)}
-                            disabled={deleting === r.id}
-                          >
-                            {deleting === r.id ? "Deleting..." : "Delete"}
-                          </button>
-                        </div>
-                      )}
+                      <div ref={openMenu === r.id ? menuRef : null}>
+                        <button 
+                          className="btn-more"
+                          onClick={() => setOpenMenu(openMenu === r.id ? null : r.id)}
+                          disabled={deleting === r.id}
+                        >
+                          ⋮
+                        </button>
+                        {openMenu === r.id && (
+                          <div className="action-menu">
+                            <Link href={`/admin/requests/${r.id}`}>Review</Link>
+                            <Link href={`/admin/requests/${r.id}/edit`}>Edit</Link>
+                            <div className="divider"></div>
+                            <button 
+                              className="delete"
+                              onClick={() => deleteRequest(r.id)}
+                              disabled={deleting === r.id}
+                            >
+                              {deleting === r.id ? "Deleting..." : "Delete"}
+                            </button>
+                          </div>
+                        )}
+                      </div>
                     </td>
                   </tr>
                 ))}
