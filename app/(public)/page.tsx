@@ -216,7 +216,7 @@ export default async function HomePage() {
       {/* ── Events + News ── */}
       <div style={{ background: "var(--gray-50)" }}>
         <div className="section">
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 40 }}>
+          <div className="home-events-news-grid">
             {/* Events */}
             <div>
               <div className="section-title">
@@ -224,32 +224,36 @@ export default async function HomePage() {
                 <Link href="/events" className="view-all">View All →</Link>
               </div>
               {upcomingEvents.length === 0 ? (
-                <div className="empty-state" style={{ padding: "40px 0" }}>
-                  <div className="empty-icon">📅</div>
-                  <p>No upcoming events. Check back soon!</p>
+                <div className="empty-state" style={{ padding: "44px 20px", background: "#ffffff", borderRadius: 14, border: "1.5px dashed #cbd5e1" }}>
+                  <div className="empty-icon" style={{ fontSize: 36, marginBottom: 8 }}>📅</div>
+                  <p style={{ margin: 0, fontWeight: 700, color: "#1e293b" }}>No upcoming events right now.</p>
+                  <span style={{ fontSize: 13, color: "#64748b", marginTop: 4, display: "block" }}>Check back soon for community meetings and dates!</span>
                 </div>
               ) : (
                 <div style={{ display: "grid", gap: 16 }}>
                   {upcomingEvents.map((e) => (
-                    <Link key={e.id} href={`/events/${e.slug}`} className="post-card" style={{ flexDirection: "row" }}>
-                      <div
-                        className="post-card-img"
-                        style={{
-                          width: 80,
-                          height: 80,
-                          borderRadius: "12px 0 0 12px",
-                          flexShrink: 0,
-                          fontSize: 24,
-                        }}
-                      >
-                        📅
+                    <Link key={e.id} href={`/events/${e.slug}`} className="home-feed-card">
+                      <div className="home-feed-card-img">
+                        {e.imageUrl ? (
+                          <img
+                            src={e.imageUrl}
+                            alt={e.title}
+                            loading="lazy"
+                          />
+                        ) : (
+                          <div className="home-feed-card-fallback">📅</div>
+                        )}
                       </div>
-                      <div className="post-card-body" style={{ padding: "12px 16px" }}>
-                        <div className="post-card-kind">Event</div>
-                        <div className="post-card-title" style={{ fontSize: 14 }}>{e.title}</div>
+                      <div className="home-feed-card-body">
+                        <div className="home-feed-card-kind">📅 Event</div>
+                        <div className="home-feed-card-title">{e.title}</div>
+                        {e.summary && (
+                          <div className="home-feed-card-summary">{e.summary}</div>
+                        )}
                         {e.eventDate && (
-                          <div className="post-card-meta" style={{ margin: 0, border: 0, padding: 0, marginTop: 4 }}>
-                            {new Date(e.eventDate).toLocaleDateString()} {e.eventVenue && `· ${e.eventVenue}`}
+                          <div className="home-feed-card-meta">
+                            <span>🗓️ {new Date(e.eventDate).toLocaleDateString()}</span>
+                            {e.eventVenue && <span>📍 {e.eventVenue}</span>}
                           </div>
                         )}
                       </div>
@@ -266,34 +270,36 @@ export default async function HomePage() {
                 <Link href="/news" className="view-all">View All →</Link>
               </div>
               {latestNews.length === 0 ? (
-                <div className="empty-state" style={{ padding: "40px 0" }}>
-                  <div className="empty-icon">📰</div>
-                  <p>No news yet. Check back soon!</p>
+                <div className="empty-state" style={{ padding: "44px 20px", background: "#ffffff", borderRadius: 14, border: "1.5px dashed #cbd5e1" }}>
+                  <div className="empty-icon" style={{ fontSize: 36, marginBottom: 8 }}>📰</div>
+                  <p style={{ margin: 0, fontWeight: 700, color: "#1e293b" }}>No news stories published yet.</p>
+                  <span style={{ fontSize: 13, color: "#64748b", marginTop: 4, display: "block" }}>Stay tuned for updates from our community!</span>
                 </div>
               ) : (
                 <div style={{ display: "grid", gap: 16 }}>
                   {latestNews.map((n) => (
-                    <Link key={n.id} href={`/news/${n.slug}`} className="post-card" style={{ flexDirection: "row" }}>
-                      <div
-                        className="post-card-img"
-                        style={{
-                          width: 80,
-                          height: 80,
-                          borderRadius: "12px 0 0 12px",
-                          flexShrink: 0,
-                          fontSize: 24,
-                          background: n.imageUrl
-                            ? `url(${n.imageUrl}) center/cover`
-                            : "linear-gradient(135deg, var(--navy-700), var(--navy-600))",
-                        }}
-                      >
-                        {!n.imageUrl && "📰"}
+                    <Link key={n.id} href={`/news/${n.slug}`} className="home-feed-card">
+                      <div className="home-feed-card-img">
+                        {n.imageUrl ? (
+                          <img
+                            src={n.imageUrl}
+                            alt={n.title}
+                            loading="lazy"
+                          />
+                        ) : (
+                          <div className="home-feed-card-fallback">📰</div>
+                        )}
                       </div>
-                      <div className="post-card-body" style={{ padding: "12px 16px" }}>
-                        <div className="post-card-kind">News</div>
-                        <div className="post-card-title" style={{ fontSize: 14 }}>{n.title}</div>
+                      <div className="home-feed-card-body">
+                        <div className="home-feed-card-kind">📰 News</div>
+                        <div className="home-feed-card-title">{n.title}</div>
                         {n.summary && (
-                          <div className="post-card-summary" style={{ fontSize: 13 }}>{n.summary}</div>
+                          <div className="home-feed-card-summary">{n.summary}</div>
+                        )}
+                        {n.publishedAt && (
+                          <div className="home-feed-card-meta">
+                            <span>📅 {new Date(n.publishedAt).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })}</span>
+                          </div>
                         )}
                       </div>
                     </Link>

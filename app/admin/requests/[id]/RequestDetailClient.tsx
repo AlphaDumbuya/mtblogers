@@ -65,7 +65,14 @@ export default function RequestDetailClient({ request }: { request: any }) {
             <h2>Documents</h2>
             <div style={{ display: "grid", gap: 12 }}>
               {request.documents.map((d: any) => {
-                const isImage = d.url && /\.(jpg|jpeg|png|gif|webp)$/i.test(d.url);
+                const isImage = Boolean(
+                  d.url && (
+                    /\.(jpg|jpeg|png|gif|webp|svg|bmp)$/i.test(d.url) ||
+                    /\.(jpg|jpeg|png|gif|webp|svg|bmp)$/i.test(d.name || "") ||
+                    (d.type && d.type.startsWith("image/")) ||
+                    d.url.includes(".ufs.sh/f/")
+                  )
+                );
                 return (
                   <div key={d.id}>
                     {isImage ? (
@@ -73,35 +80,54 @@ export default function RequestDetailClient({ request }: { request: any }) {
                         borderRadius: 10,
                         overflow: "hidden",
                         border: "1px solid var(--line)",
-                        background: "#f1f5f9",
+                        background: "#0f172a",
                         display: "flex",
                         flexDirection: "column",
                       }}>
-                        <img
-                          src={d.url}
-                          alt={d.name}
-                          style={{
-                            maxWidth: "100%",
-                            maxHeight: 300,
-                            width: "auto",
-                            height: "auto",
-                            objectFit: "contain",
-                            display: "block",
-                          }}
-                        />
-                        <a href={d.url} target="_blank" rel="noreferrer"
-                          style={{
-                            padding: "8px 14px",
-                            textAlign: "center",
-                            borderTop: "1px solid var(--line)",
-                            textDecoration: "none",
-                            color: "var(--green)",
-                            fontWeight: 600,
-                            fontSize: 12,
-                            background: "#f8fafc",
-                          }}>
-                          📥 Download
-                        </a>
+                        <div style={{
+                          padding: 12,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          minHeight: 180,
+                        }}>
+                          <img
+                            src={d.url}
+                            alt={d.name}
+                            style={{
+                              maxWidth: "100%",
+                              maxHeight: 360,
+                              width: "auto",
+                              height: "auto",
+                              objectFit: "contain",
+                              display: "block",
+                              borderRadius: 6,
+                            }}
+                          />
+                        </div>
+                        <div style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          padding: "8px 14px",
+                          borderTop: "1px solid rgba(255,255,255,0.1)",
+                          background: "#1e293b",
+                          fontSize: 12,
+                        }}>
+                          <span style={{ color: "#94a3b8", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "60%" }}>
+                            🖼️ {d.name}
+                          </span>
+                          <div style={{ display: "flex", gap: 10 }}>
+                            <a href={d.url} target="_blank" rel="noreferrer"
+                              style={{ color: "#38bdf8", textDecoration: "none", fontWeight: 600 }}>
+                              Open ↗
+                            </a>
+                            <a href={d.url} download target="_blank" rel="noreferrer"
+                              style={{ color: "#4ade80", textDecoration: "none", fontWeight: 600 }}>
+                              Download
+                            </a>
+                          </div>
+                        </div>
                       </div>
                     ) : (
                       <a href={d.url} target="_blank" rel="noreferrer"

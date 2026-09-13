@@ -10,6 +10,7 @@ interface Member {
   phone: string;
   email: string | null;
   district: string | null;
+  photoUrl?: string | null;
   status: string;
   _count: { contributions: number; requests: number };
 }
@@ -92,8 +93,38 @@ export default function MembersPageClient({ initialMembers }: { initialMembers: 
                       </Link>
                     </td>
                     <td>
-                      <Link href={`/admin/members/${m.id}`} style={{ fontWeight: 600, textDecoration: "none", color: "var(--navy)" }}>
-                        {m.fullName}
+                      <Link href={`/admin/members/${m.id}`} style={{ display: "flex", alignItems: "center", gap: 10, fontWeight: 600, textDecoration: "none", color: "var(--navy)" }}>
+                        {m.photoUrl ? (
+                          <img
+                            src={m.photoUrl}
+                            alt={m.fullName}
+                            style={{
+                              width: 34,
+                              height: 34,
+                              borderRadius: "50%",
+                              objectFit: "cover",
+                              border: "1.5px solid #d5dee8",
+                              flexShrink: 0,
+                            }}
+                          />
+                        ) : (
+                          <div style={{
+                            width: 34,
+                            height: 34,
+                            borderRadius: "50%",
+                            background: "linear-gradient(135deg, #e2e8f0, #cbd5e1)",
+                            color: "#475569",
+                            fontSize: 12,
+                            fontWeight: 700,
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            flexShrink: 0,
+                          }}>
+                            {m.fullName ? m.fullName.charAt(0).toUpperCase() : "?"}
+                          </div>
+                        )}
+                        <span>{m.fullName}</span>
                       </Link>
                     </td>
                     <td>{m.phone}</td>

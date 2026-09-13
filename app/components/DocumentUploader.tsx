@@ -70,7 +70,7 @@ export function DocumentUploader({
             onClientUploadComplete={(res) => {
               if (res?.[0]) {
                 const newDoc: UploadedDocument = {
-                  url: res[0].url,
+                  url: res[0].ufsUrl ?? res[0].url,
                   name: res[0].name || "Document",
                   key: res[0].key,
                 };

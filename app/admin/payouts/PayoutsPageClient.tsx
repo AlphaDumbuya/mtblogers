@@ -117,15 +117,39 @@ export default function PayoutsPageClient({
                       <td style={{ fontSize: 12 }}>{new Date(p.paidAt).toLocaleDateString()}</td>
                       <td style={{ textAlign: "center" }}>
                         {p.proofUrl ? (
-                          <a href={p.proofUrl} target="_blank" rel="noopener noreferrer" style={{
-                            color: "#1c9366",
-                            textDecoration: "none",
-                            fontWeight: 600,
-                            fontSize: 12,
-                          }}>
-                            📄 View
+                          <a
+                            href={p.proofUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            title="Click to view full receipt / proof"
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: 6,
+                              padding: "4px 8px",
+                              borderRadius: 6,
+                              background: "#f0fdf4",
+                              border: "1px solid #bbf7d0",
+                              textDecoration: "none",
+                              transition: "transform 0.15s, box-shadow 0.15s",
+                            }}
+                          >
+                            <img
+                              src={p.proofUrl}
+                              alt="Receipt"
+                              style={{
+                                width: 24,
+                                height: 24,
+                                borderRadius: 4,
+                                objectFit: "cover",
+                                display: "block",
+                              }}
+                            />
+                            <span style={{ fontSize: 11, fontWeight: 700, color: "#166534" }}>Receipt ↗</span>
                           </a>
-                        ) : "—"}
+                        ) : (
+                          <span style={{ color: "#94a3b8", fontSize: 12 }}>—</span>
+                        )}
                       </td>
                       <td style={{ position: "relative", textAlign: "center" }}>
                         <div ref={openMenu === p.id ? menuRef : null}>

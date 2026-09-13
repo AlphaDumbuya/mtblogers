@@ -33,12 +33,40 @@ export default async function NewsPage() {
                 <div
                   className="post-card-img"
                   style={{
-                    background: p.imageUrl
-                      ? `url(${p.imageUrl}) center/cover`
-                      : "linear-gradient(135deg, var(--navy-700), var(--green-800))",
+                    position: "relative",
+                    overflow: "hidden",
+                    background: "#0f172a",
+                    height: 200,
                   }}
                 >
-                  {!p.imageUrl && "📰"}
+                  {p.imageUrl ? (
+                    <img
+                      src={p.imageUrl}
+                      alt={p.title}
+                      loading="lazy"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        display: "block",
+                      }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        background: "linear-gradient(135deg, var(--navy-700), var(--green-800))",
+                        fontSize: 36,
+                        color: "var(--navy-200)",
+                      }}
+                    >
+                      📰
+                    </div>
+                  )}
                 </div>
                 <div className="post-card-body">
                   <div className="post-card-kind">News</div>

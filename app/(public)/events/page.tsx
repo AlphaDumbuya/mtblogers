@@ -40,12 +40,40 @@ export default async function EventsPage() {
                 <div
                   className="post-card-img"
                   style={{
-                    background: e.imageUrl
-                      ? `url(${e.imageUrl}) center/cover`
-                      : "linear-gradient(135deg, var(--navy-700), var(--navy-600))",
+                    position: "relative",
+                    overflow: "hidden",
+                    background: "#0f172a",
+                    height: 200,
                   }}
                 >
-                  {!e.imageUrl && "📅"}
+                  {e.imageUrl ? (
+                    <img
+                      src={e.imageUrl}
+                      alt={e.title}
+                      loading="lazy"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        display: "block",
+                      }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        background: "linear-gradient(135deg, var(--navy-700), var(--navy-600))",
+                        fontSize: 36,
+                        color: "var(--navy-200)",
+                      }}
+                    >
+                      📅
+                    </div>
+                  )}
                 </div>
                 <div className="post-card-body">
                   <div className="post-card-kind">Event</div>
@@ -82,12 +110,40 @@ export default async function EventsPage() {
                   <div
                     className="post-card-img"
                     style={{
-                      background: e.imageUrl
-                        ? `url(${e.imageUrl}) center/cover`
-                        : "linear-gradient(135deg, var(--gray-500), var(--gray-700))",
+                      position: "relative",
+                      overflow: "hidden",
+                      background: "#1e293b",
+                      height: 180,
                     }}
                   >
-                    {!e.imageUrl && "📅"}
+                    {e.imageUrl ? (
+                      <img
+                        src={e.imageUrl}
+                        alt={e.title}
+                        loading="lazy"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                          display: "block",
+                        }}
+                      />
+                    ) : (
+                      <div
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          background: "linear-gradient(135deg, var(--gray-500), var(--gray-700))",
+                          fontSize: 36,
+                          color: "var(--navy-200)",
+                        }}
+                      >
+                        📅
+                      </div>
+                    )}
                   </div>
                   <div className="post-card-body">
                     <div className="post-card-kind" style={{ color: "var(--gray-500)" }}>Past Event</div>

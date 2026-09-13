@@ -93,19 +93,31 @@ export default function PostsPageClient({
                   height: 80,
                   borderRadius: 10,
                   flexShrink: 0,
-                  background: p.imageUrl
-                    ? `url(${p.imageUrl}) center/cover`
-                    : "linear-gradient(135deg, #1c9366, #0f7652)",
-                  display: "none",
+                  overflow: "hidden",
+                  background: p.imageUrl ? "#0f172a" : "linear-gradient(135deg, #1c9366, #0f7652)",
+                  display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  fontSize: 24,
+                  fontSize: 26,
                   color: "#fff",
-                  overflow: "hidden",
+                  boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
                 }}
                 className="post-thumbnail"
               >
-                {!p.imageUrl && (p.kind === "EVENT" ? "📅" : "📰")}
+                {p.imageUrl ? (
+                  <img
+                    src={p.imageUrl}
+                    alt={p.title}
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      objectFit: "cover",
+                      display: "block",
+                    }}
+                  />
+                ) : (
+                  p.kind === "EVENT" ? "📅" : "📰"
+                )}
               </div>
 
               {/* Content */}

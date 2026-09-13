@@ -13,7 +13,7 @@ export const ourFileRouter = {
       return {};
     })
     .onUploadComplete(async ({ metadata, file }) => {
-      return { url: file.url, key: file.key };
+      return { url: file.ufsUrl ?? file.url, ufsUrl: file.ufsUrl, key: file.key };
     }),
 
   // Document uploads for assistance requests
@@ -25,7 +25,7 @@ export const ourFileRouter = {
       return {};
     })
     .onUploadComplete(async ({ metadata, file }) => {
-      return { url: file.url, key: file.key, name: file.name };
+      return { url: file.ufsUrl ?? file.url, ufsUrl: file.ufsUrl, key: file.key, name: file.name };
     }),
 
   // Avatar/profile picture uploads
@@ -36,7 +36,7 @@ export const ourFileRouter = {
       return {};
     })
     .onUploadComplete(async ({ metadata, file }) => {
-      return { url: file.url, key: file.key };
+      return { url: file.ufsUrl ?? file.url, ufsUrl: file.ufsUrl, key: file.key };
     }),
 } satisfies FileRouter;
 
