@@ -59,3 +59,44 @@ export async function PATCH(request: Request, { params }: Params) {
 
   return NextResponse.json({ success: true, request: req });
 }
+
+export async function DELETE(
+  request: Request,
+  { params }: Params
+) {
+  const session = await getSession();
+  if (!session) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const { id } = await params;
+
+    // Check if request exists
+    const req = await prisma.assistanceRequest.findUnique({ where: { id } });
+    if (!req) {
+      return NextResponse.json({ error: "Request not found" }, { status: 404 });
+    }
+
+    // Delete the request (cascade delete will handle related documents)
+    await prisma.assistanceRequest.delete({ where: { id } });
+
+    // Audit log
+    await prisma.auditLog.create({
+      data: {
+        action: "Request deleted",
+        entity: `AssistanceRequest:${id}`,
+        adminId: session.id,
+      },
+    });
+
+    return NextResponse.json({ success: true, message: "Request deleted" });
+  } catch (error) {
+    console.error("Delete request error:", error);
+    return NextResponse.json(
+      { error: "Failed to delete request" },
+      { status: 500 }
+    );
+  }
+}
+

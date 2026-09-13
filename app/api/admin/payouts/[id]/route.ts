@@ -16,20 +16,20 @@ export async function DELETE(
   try {
     const { id } = await params;
 
-    // Check if member exists
-    const member = await prisma.member.findUnique({ where: { id } });
-    if (!member) {
-      return NextResponse.json({ error: "Member not found" }, { status: 404 });
+    // Check if payout exists
+    const payout = await prisma.payout.findUnique({ where: { id } });
+    if (!payout) {
+      return NextResponse.json({ error: "Payout not found" }, { status: 404 });
     }
 
-    // Delete the member (cascade delete will handle related records)
-    await prisma.member.delete({ where: { id } });
+    // Delete the payout
+    await prisma.payout.delete({ where: { id } });
 
-    return NextResponse.json({ success: true, message: "Member deleted" });
+    return NextResponse.json({ success: true, message: "Payout deleted" });
   } catch (error) {
-    console.error("Delete member error:", error);
+    console.error("Delete payout error:", error);
     return NextResponse.json(
-      { error: "Failed to delete member" },
+      { error: "Failed to delete payout" },
       { status: 500 }
     );
   }

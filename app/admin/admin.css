@@ -336,8 +336,6 @@ table.data td {
   padding: 12px 14px;
   border-bottom: 1px solid #f0f4f8;
   vertical-align: middle;
-  word-break: break-word;
-  white-space: normal;
 }
 table.data tr:last-child td { border-bottom: none; }
 table.data tr:hover td { background: #f7fafc; }
@@ -607,6 +605,62 @@ table.data .mono { font-family: ui-monospace, monospace; font-size: 12px; }
 .btn.danger:hover { background: #fecaca; }
 .btn.sm { padding: 7px 12px; font-size: 12.5px; }
 .btn.lg { padding: 14px 22px; font-size: 15px; }
+
+/* Action menu button */
+.btn-more {
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--slate);
+  padding: 6px 10px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: background 0.14s, color 0.14s;
+}
+.btn-more:hover { background: #f1f5f9; color: var(--navy-3); }
+
+/* Action dropdown menu */
+.action-menu {
+  position: absolute;
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  box-shadow: 0 4px 12px rgba(15,42,71,0.15);
+  min-width: 150px;
+  z-index: 50;
+  top: 100%;
+  right: 0;
+  margin-top: 4px;
+}
+.action-menu a,
+.action-menu button {
+  display: block;
+  width: 100%;
+  padding: 10px 14px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  text-decoration: none;
+  color: var(--navy-3);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.14s;
+}
+.action-menu a:hover,
+.action-menu button:hover {
+  background: #f5f8fb;
+}
+.action-menu .divider {
+  border-top: 1px solid var(--line);
+  margin: 4px 0;
+}
+.action-menu .delete {
+  color: #dc2626;
+}
+.action-menu .delete:hover {
+  background: #fee2e2;
+}
 
 /* ─── Pagination ──────────────────────────────────────────────── */
 .pagination {
