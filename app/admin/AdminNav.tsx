@@ -42,17 +42,32 @@ export default function AdminNav() {
     };
   }
 
+  function closeMobileNav() {
+    // Close the mobile navigation when a link is clicked
+    document.body.classList.remove("nav-open");
+  }
+
   return (
     <nav>
       {NAV_ITEMS.map((item) => (
-        <Link key={item.href} href={item.href} style={linkStyle(item.href)}>
+        <Link 
+          key={item.href} 
+          href={item.href} 
+          style={linkStyle(item.href)}
+          onClick={closeMobileNav}
+        >
           {item.label}
         </Link>
       ))}
 
       <div style={{ borderTop: "1px solid rgba(255,255,255,0.1)", margin: "10px 0", paddingTop: 10 }}>
         {NAV_ITEMS_SECONDARY.map((item) => (
-          <Link key={item.href} href={item.href} style={linkStyle(item.href)}>
+          <Link 
+            key={item.href} 
+            href={item.href} 
+            style={linkStyle(item.href)}
+            onClick={closeMobileNav}
+          >
             {item.label}
           </Link>
         ))}

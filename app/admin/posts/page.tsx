@@ -52,13 +52,14 @@ export default async function PostsAdminPage() {
                     background: p.imageUrl
                       ? `url(${p.imageUrl}) center/cover`
                       : "linear-gradient(135deg, #1c9366, #0f7652)",
-                    display: "flex",
+                    display: "none",
                     alignItems: "center",
                     justifyContent: "center",
                     fontSize: 24,
                     color: "#fff",
                     overflow: "hidden",
                   }}
+                  className="post-thumbnail"
                 >
                   {!p.imageUrl && (p.kind === "EVENT" ? "📅" : "📰")}
                 </div>
