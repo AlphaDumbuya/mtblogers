@@ -41,8 +41,6 @@ export default async function PostsAdminPage() {
                   background: "#fff",
                   transition: "background 0.2s",
                 }}
-                onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = "#f8fafc"}
-                onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = "#fff"}
               >
                 {/* Image Thumbnail */}
                 <div
@@ -110,6 +108,20 @@ export default async function PostsAdminPage() {
           </div>
         )}
       </div>
-    </>
-  );
+      </>
+    );
+  } catch (error) {
+    console.error("Failed to load posts:", error);
+    return (
+      <>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+          <h1 style={{ margin: 0 }}>News &amp; Events</h1>
+          <Link href="/admin/posts/new" className="btn">+ New Post</Link>
+        </div>
+        <div className="panel" style={{ padding: "30px", textAlign: "center" }}>
+          <p style={{ color: "#dc2626", fontWeight: 600 }}>Error loading posts. Please try refreshing the page.</p>
+        </div>
+      </>
+    );
+  }
 }
