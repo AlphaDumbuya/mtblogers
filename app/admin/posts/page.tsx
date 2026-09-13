@@ -9,23 +9,24 @@ export default async function PostsAdminPage() {
   const session = await getSession();
   if (!session) redirect("/admin/login");
 
-  const posts = await prisma.post.findMany({
-    orderBy: { createdAt: "desc" },
-    include: { admin: { select: { name: true, email: true } } },
-  });
+  try {
+    const posts = await prisma.post.findMany({
+      orderBy: { createdAt: "desc" },
+      include: { admin: { select: { name: true, email: true } } },
+    });
 
-  return (
-    <>
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-        <h1 style={{ margin: 0 }}>News &amp; Events</h1>
-        <Link href="/admin/posts/new" className="btn">+ New Post</Link>
-      </div>
+    return (
+      <>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
+          <h1 style={{ margin: 0 }}>News &amp; Events</h1>
+          <Link href="/admin/posts/new" className="btn">+ New Post</Link>
+        </div>
 
-      <div className="panel">
-        <h2>{posts.length} post{posts.length !== 1 ? "s" : ""}</h2>
-        {posts.length === 0 ? (
-          <div className="empty">No posts yet. <a href="/admin/posts/new" style={{ color: "#1c9366" }}>Create one.</a></div>
-        ) : (
+        <div className="panel">
+          <h2>{posts.length} post{posts.length !== 1 ? "s" : ""}</h2>
+          {posts.length === 0 ? (
+            <div className="empty">No posts yet. <a href="/admin/posts/new" style={{ color: "#1c9366" }}>Create one.</a></div>
+          ) : (
           <div style={{ display: "grid", gap: 12 }}>
             {posts.map((p: typeof posts[number]) => (
               <div
